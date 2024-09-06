@@ -17,6 +17,7 @@ import com.invictus.img.downloader.domain.repository.UserIdCardRepository
 import com.invictus.img.downloader.domain.use_case.auth.LogInUseCase
 import com.invictus.img.downloader.domain.use_case.session.CheckLoggedInSession
 import com.invictus.img.downloader.domain.use_case.user.GetLoggedUser
+import com.invictus.img.downloader.util.AppFileHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Cookie
@@ -110,7 +111,11 @@ object Di {
 
 
     val userDataStore by lazy {
-        UserDataStore(createDataStore { File(DATA_STORE_FILE_NAME).absolutePath })
+        UserDataStore(createDataStore {
+            File(
+                AppFileHelper.getDataDirectory(), DATA_STORE_FILE_NAME
+            ).absolutePath
+        })
     }
 
     private fun createDataStore(producePath: () -> String): DataStore<Preferences> =
