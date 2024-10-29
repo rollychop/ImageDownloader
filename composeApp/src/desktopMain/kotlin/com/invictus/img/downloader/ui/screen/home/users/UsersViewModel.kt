@@ -21,6 +21,7 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.io.File
 import java.io.IOException
+import java.lang.reflect.Field
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -38,6 +39,7 @@ data class UsersScreenState(
     val error: String = "",
     val users: List<IdCardUserModel> = emptyList(),
     val filteredUsers: List<IdCardUserModel> = emptyList(),
+    val keys: List<Field> = emptyList(),
     val totalImages: Int = 0,
 )
 
@@ -101,6 +103,22 @@ class UsersViewModel : ViewModel() {
                     _state.update { _ ->
                         UsersScreenState(
                             users = it,
+                            keys = IdCardUserModel::class.java.declaredFields.map { it }
+                                .filter {
+                                    !it.name.startsWith("$") && it.type in setOf(
+                                        String::class.java,
+                                        Long::class.java,
+                                        Long::class.javaObjectType,
+                                        Int::class.java,
+                                        Int::class.javaObjectType,
+                                        Float::class.javaObjectType,
+                                        Float::class.java,
+                                        Double::class.javaObjectType,
+                                        Double::class.java,
+                                        Boolean::class.javaObjectType,
+                                        Boolean::class.java,
+                                    )
+                                },
                             filteredUsers = getFilteredUsers(filterQuery, it),
                             totalImages = it.count { it.picture.startsWith("https://") })
                     }

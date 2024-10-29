@@ -30,6 +30,7 @@ import com.invictus.img.downloader.ui.component.button.LoadingButton
 import com.invictus.img.downloader.ui.component.button.LoadingButtonType
 import com.invictus.img.downloader.ui.component.text.ErrorText
 import com.invictus.img.downloader.ui.component.textfield.DateInputField
+import com.invictus.img.downloader.ui.component.textfield.SearchField
 import com.invictus.img.downloader.ui.navigation.NavigationAction
 import com.invictus.img.downloader.ui.navigation.OnScreenAction
 import com.invictus.img.downloader.ui.screen.home.dashboard.TableCell
@@ -42,7 +43,7 @@ import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.viewmodel.viewModel
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun UsersScreen(
     prefix: String,
@@ -67,46 +68,80 @@ fun UsersScreen(
     val scrolled by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 1 } }
 
     val scope = rememberCoroutineScope()
+    var active by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            SearchBar(
-                modifier = Modifier.fillMaxWidth(),
+    Scaffold { paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(top = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+
+            SearchField(
+                onQueryChange = viewModel::filter,
                 query = viewModel.filterQuery,
-                onSearch = {},
-                active = false,
-                onActiveChange = {},
+                active = active,
+                onActiveChange = { active = it },
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+
+            /*DockedSearchBar(
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.TopStart),
+                query = viewModel.filterQuery,
+                onSearch = {
+                    active = false
+                },
+                active = active,
+                onActiveChange = {
+                    active = it
+                },
                 onQueryChange = viewModel::filter,
                 leadingIcon = {
                     IconButton(onClick = {
-                        onScreenAction(NavigationAction.NavUp)
+                        if (active) {
+                            active = false
+                        } else {
+                            onScreenAction(NavigationAction.NavUp)
+                        }
                     }) {
-                        Icon(Icons.Default.ArrowBackIosNew, "")
+                        Icon(if (active) Icons.Default.Close else Icons.Default.ArrowBackIosNew, "")
                     }
                 },
                 trailingIcon = {
-                    LoadingButton(
-                        text = "Download Images",
-                        onClick = {
-                            showDownloadDialog = true
-                        }
-                    )
+                    if (!active) {
+                        LoadingButton(
+                            text = "Download Images",
+                            onClick = {
+                                showDownloadDialog = true
+                            }
+                        )
+                    }
                 },
                 placeholder = {
                     Text("Search Users")
                 }
-            ) {}
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+            ) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    state.keys.forEach {
+                        SuggestionChip(
+                            onClick = {
+                                viewModel.filter("${it.name}:")
+                            },
+                            label = { Text(text = it.name) }
+                        )
+                    }
+                }
+            }*/
             LazyColumn(
                 state = scrollState,
                 modifier = Modifier.padding(paddingValues)
+                    .padding(top = 72.dp)
                     .fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 32.dp, top = 8.dp),
+                contentPadding = PaddingValues(bottom = 96.dp),
             ) {
                 stickyHeader(key = "header", contentType = "h-row") {
                     Row(
@@ -144,7 +179,7 @@ fun UsersScreen(
                                             }
 
                                             else -> {
-                                                selectedUsers.clear()
+//                                                selectedUsers.clear()
                                                 state.filteredUsers.forEach {
                                                     selectedUsers[it] = true
                                                 }

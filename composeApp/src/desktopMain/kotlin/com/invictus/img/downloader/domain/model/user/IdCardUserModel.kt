@@ -13,10 +13,7 @@ data class IdCardUserModel(
     val section: String,
     val picture: String,
     val lastClickedDate: Long?
-) {
-    val isRemoteImage = picture.startsWith("https://") ||
-            picture.startsWith("android.resource://")
-}
+)
 
 val EMPTY_USER = IdCardUserModel(
     id = "",

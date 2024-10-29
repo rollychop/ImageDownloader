@@ -47,8 +47,12 @@ fun DashboardScreen(
                 }
             )
         }
-    ) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 32.dp),

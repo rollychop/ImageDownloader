@@ -8,7 +8,6 @@ precompose = "1.6.1"
 retrofit-version = "2.9.0"
 okhttp-version = "4.12.0"
 androidx-data-store = "1.1.1"
-mongodb = "5.1.4"
 logback_version = "1.5.7"
 kamel-image = "0.9.5"
 ktor_version = "2.3.12"
@@ -30,7 +29,6 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofitConverterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit-version" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp-version" }
 okhttpLogging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp-version" }
-mongodb = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongodb" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback_version" }
 okhttp-ktor-engine = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor_version" }
 
